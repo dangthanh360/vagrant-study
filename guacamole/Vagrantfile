@@ -1,0 +1,29 @@
+    # encoding: utf-8
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+current_dir = File.dirname(File.expand_path(__FILE__))
+settings = YAML.load_file("#{current_dir}/setting.yml")
+API_VERSION = "2"
+
+Vagrant.configure(API_VERSION) do |config|
+    config.vm.box = "ubuntu/bionic64"
+    config.vm.define settings["vm_name"]
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048
+        vb.name = settings["vm_name"]
+    end
+    config.vm.network "private_network", ip: settings["private_network"]
+    config.vm.synced_folder "#{current_dir}/vagrant", "/vagrant"
+    config.vm.hostname = settings["host_name"]
+    
+    config.vm.provision "shell" do |s|
+        s.path = "#{current_dir}/vagrant/install.sh"
+        s.env = {GUACVERSION: settings["guacamole_version"], HOST_URL: settings["host_url"], MSQL_ROOT_PASS: settings["db"]["root_password"], DB_NAME: settings["db"]["db_name"], DB_USER: settings["db"]["db_user"], DB_PASS: settings["db"]["db_pass"], VNC_PASS: settings["vnc"]["pass"]}
+    end
+    
+    config.ssh.insert_key = false
+    config.vm.post_up_message = "http://#{settings['host_url']}:8080/guacamole/\nDefault login guacadmin:guacadmin"
+end

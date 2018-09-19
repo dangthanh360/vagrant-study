@@ -1,0 +1,17 @@
+guacamole_version: 0.9.14
+
+private_network: 192.168.56.110
+host_name: guacamole
+vm_name: guacamole
+host_url: guacamole.local
+
+# Setting for MySQL
+db:
+    root_password: root
+    db_name: guacamole_db
+    db_user: guacamole_user
+    db_pass: guacamole_pass
+
+# Setting for VNC
+vnc:
+    pass: vncroot

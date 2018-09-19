@@ -1,0 +1,15 @@
+private_network: 192.168.56.100
+host_name: lamp
+vm_name: lamp
+time_zone: UTC
+
+# Settings for Apache
+web:
+    vhost:
+        host_name: lamp.local
+        root_dir: /var/www/html/yii2
+
+# Setting for MySQL
+db:
+    pass: root
+

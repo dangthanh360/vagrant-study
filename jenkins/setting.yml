@@ -1,0 +1,15 @@
+private_network: 192.168.56.50
+host_name: vagrant-jenkins
+vm_name: vagrant-jenkins
+time_zone: UTC
+host_url: jenkins.local
+
+admin:
+  pass: admin
+  salt: jenkins
+plugins: >
+  build-timeout credentials-binding timestamper ws-cleanup
+  ant gradle workflow-aggregator git github github-api branch-api jenkins-multijob-plugin conditional-buildstep
+  token-macro authentication-tokens matrix-project matrix-auth ssh ssh-credentials ssh-slaves
+  email-ext mailer bouncycastle-api cloudbees-folder antisamy-markup-formatter
+

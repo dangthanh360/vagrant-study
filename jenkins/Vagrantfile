@@ -1,0 +1,27 @@
+# encoding: utf-8
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+current_dir = File.dirname(File.expand_path(__FILE__))
+settings = YAML.load_file("#{current_dir}/setting.yml")
+API_VERSION = "2"
+
+Vagrant.configure(API_VERSION) do |config|
+    config.vm.box = "ubuntu/bionic64"
+    config.vm.define settings["vm_name"]
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = 1024
+        vb.name = settings["vm_name"]
+    end
+    config.vm.network "private_network", ip: settings["private_network"]
+    config.vm.synced_folder "#{current_dir}/vagrant", "/vagrant"
+    config.vm.hostname = settings["host_name"]
+    config.vm.provision "shell" do |s|
+        s.path = "#{current_dir}/vagrant/install.sh"
+        s.env = {TIME_ZONE: settings["time_zone"], ADMIN_PASS: settings["admin"]["pass"], ADMIN_PASS_SALT: settings["admin"]["salt"], HOST_URL: settings["host_url"], HOST_IP: settings["private_network"], PLUGINS_LIST: settings["plugins"]}
+    end
+    
+    config.vm.post_up_message = "Visit http://#{settings["host_url"]}:8080 (or http://#{settings["private_network"]}:8080)to view demo project"
+end
